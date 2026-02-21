@@ -1,43 +1,67 @@
 /* ── CSS Custom Properties ─────────────────────────────────── */
 :root {
-  --bg: #ffffff;
-  --bg-surface: #f5f5f5;
+  /* Siglent-inspired: cool blue accent, light gray surfaces */
+  --bg: #f0f3f7;
+  --bg-surface: #e4eaf2;
   --bg-elevated: #ffffff;
-  --text: #333333;
-  --text-muted: #666666;
-  --accent: #7c3aed;
-  --accent-hover: #6d28d9;
-  --accent-light: rgba(124, 58, 237, 0.08);
-  --border: #d0d0d0;
-  --border-accent: #7c3aed;
-  --readout-bg: #f5f0ff;
+  --text: #1a2535;
+  --text-muted: #556070;
+  --accent: #0065b3;
+  --accent-hover: #004e8e;
+  --accent-light: rgba(0, 101, 179, 0.08);
+  --border: #bec9d6;
+  --border-accent: #0065b3;
+  --readout-bg: #eaf1f9;
   --dot-connected: #22c55e;
   --dot-disconnected: #ef4444;
-  --shadow: 0 1px 3px rgba(0,0,0,0.08);
-  --radius: 6px;
+  --shadow: 0 1px 4px rgba(0,0,0,0.10);
+  --radius: 4px;
   --font: 'Montserrat', system-ui, -apple-system, sans-serif;
   --mono: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
-  --ch1: #e74c3c;
-  --ch2: #3498db;
-  --ch3: #16a34a;
+  --ch1: #d63031;
+  --ch2: #0984e3;
+  --ch3: #00a65a;
+  --toolbar-bg: #1e2b3a;
+  --toolbar-text: #c8d8e8;
+  --toolbar-border: #2e4060;
+  --toolbar-btn-bg: #263345;
+  --toolbar-btn-border: #3a5270;
+  --toolbar-btn-text: #a8c4de;
+  --toolbar-btn-hover-bg: #0065b3;
+  --toolbar-btn-hover-text: #ffffff;
+  --toolbar-input-bg: #1a2535;
+  --toolbar-input-border: #3a5270;
+  --toolbar-input-text: #c8d8e8;
 }
 
 [data-theme="dark"] {
-  --bg: #1a1a2e;
-  --bg-surface: #222240;
-  --bg-elevated: #2a2a4a;
-  --text: #e0e0e0;
-  --text-muted: #a0a0b0;
-  --accent: #a78bfa;
-  --accent-hover: #c4b5fd;
-  --accent-light: rgba(167, 139, 250, 0.1);
-  --border: #3a3a5a;
-  --border-accent: #a78bfa;
-  --readout-bg: #222240;
-  --shadow: 0 1px 3px rgba(0,0,0,0.3);
-  --ch1: #ff6b6b;
-  --ch2: #5dade2;
-  --ch3: #4ade80;
+  /* Dark mode: SPS5000X instrument chassis — deep navy/charcoal */
+  --bg: #111820;
+  --bg-surface: #192030;
+  --bg-elevated: #1f2a3c;
+  --text: #c8d8e8;
+  --text-muted: #6a88a8;
+  --accent: #3aa8f8;
+  --accent-hover: #60bcff;
+  --accent-light: rgba(58, 168, 248, 0.10);
+  --border: #273a52;
+  --border-accent: #3aa8f8;
+  --readout-bg: #162030;
+  --shadow: 0 1px 4px rgba(0,0,0,0.5);
+  --ch1: #ff6060;
+  --ch2: #40b8ff;
+  --ch3: #40da80;
+  --toolbar-bg: #0e1520;
+  --toolbar-text: #b8cce0;
+  --toolbar-border: #1e3050;
+  --toolbar-btn-bg: #162030;
+  --toolbar-btn-border: #243a55;
+  --toolbar-btn-text: #88aed0;
+  --toolbar-btn-hover-bg: #3aa8f8;
+  --toolbar-btn-hover-text: #0a1020;
+  --toolbar-input-bg: #0e1828;
+  --toolbar-input-border: #243a55;
+  --toolbar-input-text: #b8cce0;
 }
 
 /* ── Reset & Base ─────────────────────────────────────────── */
@@ -58,26 +82,54 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: var(--bg-elevated);
-  border-bottom: 2px solid var(--border-accent);
-  padding: 0.5rem 1rem;
+  background: var(--toolbar-bg);
+  border-bottom: 2px solid var(--accent);
+  padding: 0 1rem;
   display: flex;
   flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  min-height: 46px;
+}
+
+.toolbar-brand {
+  display: flex;
   align-items: center;
   gap: 0.5rem;
-  box-shadow: var(--shadow);
+  padding: 0 1rem 0 0.25rem;
+  margin-right: 0.5rem;
+  border-right: 1px solid var(--toolbar-border);
+  flex-shrink: 0;
+}
+
+.toolbar-brand-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.toolbar-brand-model {
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--toolbar-text);
+  opacity: 0.7;
+  line-height: 1;
 }
 
 .toolbar-group {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.3rem;
   flex-wrap: wrap;
+  padding: 0.5rem 0.75rem;
 }
 
 .toolbar-group + .toolbar-group {
-  padding-left: 0.5rem;
-  border-left: 1px solid var(--border);
+  border-left: 1px solid var(--toolbar-border);
 }
 
 .toolbar-spacer {
@@ -85,7 +137,70 @@ body {
   min-width: 0.5rem;
 }
 
-/* ── Buttons ──────────────────────────────────────────────── */
+/* ── Toolbar Buttons ──────────────────────────────────────── */
+.toolbar button,
+.toolbar .btn {
+  font-family: var(--font);
+  padding: 0.3rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border: 1px solid var(--toolbar-btn-border);
+  border-radius: var(--radius);
+  background: var(--toolbar-btn-bg);
+  color: var(--toolbar-btn-text);
+  cursor: pointer;
+  transition: background-color 0.12s, color 0.12s, border-color 0.12s;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.toolbar button:hover:not(:disabled) {
+  background: var(--toolbar-btn-hover-bg);
+  color: var(--toolbar-btn-hover-text);
+  border-color: var(--toolbar-btn-hover-bg);
+}
+
+.toolbar button:active:not(:disabled) {
+  opacity: 0.85;
+}
+
+.toolbar button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.toolbar button.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* ── Toolbar Inputs ───────────────────────────────────────── */
+.toolbar input[type="text"],
+.toolbar input[type="number"],
+.toolbar select {
+  font-family: var(--font);
+  padding: 0.3rem 0.5rem;
+  font-size: 0.8rem;
+  border: 1px solid var(--toolbar-input-border);
+  border-radius: var(--radius);
+  background: var(--toolbar-input-bg);
+  color: var(--toolbar-input-text);
+  line-height: 1.4;
+}
+
+.toolbar input[type="number"] {
+  width: 5rem;
+}
+
+.toolbar .unit-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--toolbar-btn-text);
+}
+
+/* ── Main-content Buttons ─────────────────────────────────── */
 button, .btn {
   font-family: var(--font);
   padding: 0.4rem 0.75rem;
@@ -102,7 +217,7 @@ button, .btn {
 
 button:hover:not(:disabled) {
   background: var(--accent);
-  color: var(--bg);
+  color: #fff;
 }
 
 button:active:not(:disabled) {
@@ -116,10 +231,10 @@ button:disabled {
 
 button.active {
   background: var(--accent);
-  color: var(--bg);
+  color: #fff;
 }
 
-/* ── Inputs ───────────────────────────────────────────────── */
+/* ── Inputs (main content) ────────────────────────────────── */
 input[type="text"],
 input[type="number"],
 select {
@@ -143,33 +258,33 @@ select {
 
 /* ── Connection Status ────────────────────────────────────── */
 .status-dot {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   background: var(--dot-disconnected);
   display: inline-block;
   flex-shrink: 0;
+  box-shadow: 0 0 0 2px rgba(239,68,68,0.2);
 }
 
 .status-dot.connected {
   background: var(--dot-connected);
+  box-shadow: 0 0 0 2px rgba(34,197,94,0.2);
 }
 
 /* ── Theme Toggle ─────────────────────────────────────────── */
 .theme-toggle {
   background: none;
-  border: none;
-  font-size: 1.2rem;
-  padding: 0.3rem;
+  border: 1px solid var(--toolbar-btn-border) !important;
+  font-size: 1rem;
+  padding: 0.3rem 0.5rem !important;
   cursor: pointer;
-  color: var(--text);
+  color: var(--toolbar-text) !important;
   line-height: 1;
 }
 
 .theme-toggle:hover {
-  opacity: 0.7;
-  background: none;
-  color: var(--text);
+  opacity: 0.8;
 }
 
 /* ── Main Content ─────────────────────────────────────────── */
@@ -182,36 +297,45 @@ select {
 /* ── 3-Channel Readout ───────────────────────────────────── */
 .readout {
   background: var(--readout-bg);
-  border: 2px solid var(--border-accent);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
   border-radius: var(--radius);
   padding: 1rem 1.5rem;
   margin-bottom: 1rem;
+  box-shadow: var(--shadow);
 }
 
 .readout-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  gap: 0;
 }
 
 .readout-channel {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.2rem;
+  padding: 0.5rem 1.25rem 0.5rem 0.25rem;
+}
+
+.readout-channel + .readout-channel {
+  border-left: 1px solid var(--border);
+  padding-left: 1.25rem;
+  padding-right: 0.25rem;
 }
 
 .channel-header {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.35rem;
 }
 
 .channel-label {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 }
 
 .channel-label.ch1 { color: var(--ch1); }
@@ -219,48 +343,52 @@ select {
 .channel-label.ch3 { color: var(--ch3); }
 
 .mode-badge {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 700;
   padding: 0.1rem 0.4rem;
-  border-radius: 3px;
+  border-radius: 2px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 .mode-cv {
-  background: rgba(34, 197, 94, 0.15);
+  background: rgba(34, 197, 94, 0.12);
   color: #16a34a;
-  border: 1px solid rgba(34, 197, 94, 0.3);
+  border: 1px solid rgba(34, 197, 94, 0.28);
 }
 
 .mode-cc {
-  background: rgba(239, 68, 68, 0.15);
+  background: rgba(239, 68, 68, 0.12);
   color: #dc2626;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  border: 1px solid rgba(239, 68, 68, 0.28);
 }
 
 .readout-row {
   display: flex;
   align-items: baseline;
-  gap: 0.35rem;
+  gap: 0.3rem;
 }
 
 .readout-value {
-  font-size: 2.2rem;
+  font-size: 2rem;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--text);
   font-variant-numeric: tabular-nums;
-  line-height: 1.2;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
 }
 
 .readout-unit {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 600;
   color: var(--text-muted);
-  min-width: 1.5rem;
+  min-width: 1.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .readout-power {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
@@ -268,6 +396,8 @@ select {
 .readout-footer {
   text-align: center;
   margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -275,8 +405,9 @@ select {
 }
 
 .readout-time {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
+  letter-spacing: 0.02em;
 }
 
 /* ── Controls Section ────────────────────────────────────── */
@@ -297,25 +428,25 @@ select {
 }
 
 .controls-footer-label {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.07em;
 }
 
 .control-channel {
-  background: var(--bg-surface);
+  background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 0.75rem;
 }
 
 .control-channel-header {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.07em;
   margin-bottom: 0.5rem;
 }
 
@@ -334,6 +465,7 @@ select {
   font-size: 0.8rem;
   color: var(--text-muted);
   min-width: 1.5rem;
+  font-weight: 600;
 }
 
 .setpoint-group input {
@@ -381,17 +513,18 @@ select {
 .stat-group {
   flex: 1;
   min-width: 160px;
-  background: var(--bg-surface);
+  background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 0.5rem 0.75rem;
+  box-shadow: var(--shadow);
 }
 
 .stat-group-header {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.07em;
   margin-bottom: 0.25rem;
 }
 
@@ -411,36 +544,39 @@ select {
 }
 
 .stat-label {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
   color: var(--text-muted);
 }
 
 .stat-value {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--text);
   font-variant-numeric: tabular-nums;
 }
 
 .stat-count {
   flex: none;
   min-width: 80px;
-  background: var(--bg-surface);
+  background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 0.5rem 0.75rem;
   text-align: center;
+  box-shadow: var(--shadow);
 }
 
 /* ── Chart Section ────────────────────────────────────────── */
 .chart-section {
-  background: var(--bg-surface);
-  border: 2px solid var(--border-accent);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
   border-radius: var(--radius);
   padding: 1rem;
   margin-bottom: 1rem;
+  box-shadow: var(--shadow);
 }
 
 .chart-controls {
@@ -452,9 +588,12 @@ select {
 }
 
 .chart-controls label {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
+  font-weight: 600;
   color: var(--text-muted);
-  margin-right: 0.15rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-right: 0.1rem;
 }
 
 .chart-wrapper {
@@ -474,29 +613,34 @@ select {
 }
 
 .chart-label {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   margin-bottom: 0.25rem;
 }
 
 /* ── Collapsible Sections ─────────────────────────────────── */
 details {
-  background: var(--bg-surface);
+  background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   margin-bottom: 1rem;
+  box-shadow: var(--shadow);
 }
 
 details summary {
-  padding: 0.75rem 1rem;
-  font-size: 0.95rem;
+  padding: 0.7rem 1rem;
+  font-size: 0.88rem;
   font-weight: 700;
   color: var(--accent);
   cursor: pointer;
   user-select: none;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
 }
 
 details summary:hover {
@@ -515,7 +659,7 @@ details .details-content {
 .log-output {
   font-family: var(--mono);
   font-size: 0.8rem;
-  background: var(--bg-elevated);
+  background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 0.75rem;
@@ -523,24 +667,27 @@ details .details-content {
   overflow-y: auto;
   white-space: pre-wrap;
   word-break: break-all;
-  color: var(--text);
+  color: var(--text-muted);
 }
 
 /* ── Command Reference Table ──────────────────────────────── */
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
 }
 
 th, td {
-  padding: 0.5rem 0.75rem;
+  padding: 0.45rem 0.75rem;
   text-align: left;
   border-bottom: 1px solid var(--border);
 }
 
 th {
   font-weight: 700;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   color: var(--accent);
   background: var(--accent-light);
 }
@@ -565,7 +712,7 @@ th {
   line-height: 1.4;
   padding: 0.65rem 1rem;
   border-radius: var(--radius);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   animation: toast-in 0.25s ease-out;
   word-break: break-word;
 }
@@ -606,7 +753,10 @@ th {
 .help-content h4 {
   color: var(--accent);
   margin: 1rem 0 0.35rem;
-  font-size: 0.9rem;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
 }
 
 .help-content h4:first-child {
@@ -625,6 +775,7 @@ th {
   background: var(--accent-light);
   padding: 0.1rem 0.35rem;
   border-radius: 3px;
+  color: var(--accent);
 }
 
 .help-content dl {
@@ -656,7 +807,8 @@ th {
 
 .sampling-inline .unit-label {
   font-size: 0.8rem;
-  color: var(--text-muted);
+  font-weight: 600;
+  color: var(--toolbar-btn-text);
 }
 
 /* ── WebSocket URL Input ──────────────────────────────────── */
@@ -678,16 +830,32 @@ th {
 
 @media (max-width: 600px) {
   .toolbar {
+    padding: 0;
+    gap: 0;
+  }
+
+  .toolbar-brand {
+    padding: 0.4rem 0.75rem;
+  }
+
+  .toolbar-group {
     padding: 0.4rem 0.5rem;
-    gap: 0.35rem;
+    gap: 0.25rem;
   }
 
   .toolbar-group + .toolbar-group {
-    padding-left: 0.35rem;
+    padding-left: 0.5rem;
   }
 
   .readout-grid {
     grid-template-columns: 1fr;
+  }
+
+  .readout-channel + .readout-channel {
+    border-left: none;
+    border-top: 1px solid var(--border);
+    padding-left: 0.25rem;
+    padding-top: 0.75rem;
   }
 
   .controls-grid {
@@ -695,7 +863,7 @@ th {
   }
 
   .readout-value {
-    font-size: 1.8rem;
+    font-size: 1.7rem;
   }
 
   .chart-wrapper {
