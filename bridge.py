@@ -17,7 +17,7 @@ voltage/current) before writing a point.
 Usage:
     uv run bridge.py
 
-The web app connects to ws://localhost:8765 (default).
+The web app connects to ws://localhost:8769 (default).
 """
 
 import asyncio
@@ -30,7 +30,19 @@ import websockets
 
 TCP_PORT = 5025
 WS_HOST = "localhost"
-WS_PORT = 8765
+WS_PORT = 8769
+
+# ─────────────────────────────────────────────────────────────────────────────
+# USER CONFIGURATION
+# Hard-code values here to skip the interactive prompts at startup.
+# Leave a field as None to be prompted interactively.
+# ─────────────────────────────────────────────────────────────────────────────
+INFLUXDB_URL         = None   # e.g. "http://localhost:8086"
+INFLUXDB_ORG         = None   # e.g. "my-org"
+INFLUXDB_BUCKET      = None   # e.g. "sensors"
+INFLUXDB_TOKEN       = None   # e.g. "my-token=="
+INFLUXDB_MEASUREMENT = None   # e.g. "sps5000x_bench1"
+# ─────────────────────────────────────────────────────────────────────────────
 
 # SCPI measurement query patterns for InfluxDB tracking (uppercase for comparison)
 MEAS_QUERIES = {
@@ -95,28 +107,38 @@ def find_usbtmc():
 def setup_influxdb():
     """Interactively configure InfluxDB logging. Returns config dict or None."""
     global _influx
-    try:
-        answer = input("\nEnable InfluxDB logging? [y/N]: ").strip().lower()
-    except EOFError:
-        return None
-    if answer != "y":
-        return None
+
+    # Use pre-configured values if all USER CONFIGURATION fields are set
+    if all([INFLUXDB_URL, INFLUXDB_ORG, INFLUXDB_BUCKET, INFLUXDB_TOKEN, INFLUXDB_MEASUREMENT]):
+        url = INFLUXDB_URL
+        org = INFLUXDB_ORG
+        bucket = INFLUXDB_BUCKET
+        token = INFLUXDB_TOKEN
+        measurement = INFLUXDB_MEASUREMENT
+        print(f"\nUsing pre-configured InfluxDB: {org}/{bucket}/{measurement}")
+    else:
+        try:
+            answer = input("\nEnable InfluxDB logging? [y/N]: ").strip().lower()
+        except EOFError:
+            return None
+        if answer != "y":
+            return None
+
+        print("\n── InfluxDB Setup ──────────────────────────────────")
+        url = input("URL [http://localhost:8086]: ").strip() or "http://localhost:8086"
+        org = input("Organization: ").strip()
+        bucket = input("Bucket: ").strip()
+        print("API Token")
+        print("  (Find yours at: InfluxDB UI → Load Data → API Tokens)")
+        token = getpass.getpass("  Token: ")
+        measurement = input("Measurement name: ").strip()
+        print("  Use snake_case, e.g. sps5000x_bench1")
+
+        if not all([org, bucket, token, measurement]):
+            print("Missing required fields — InfluxDB logging disabled.")
+            return None
 
     from influxdb_client import InfluxDBClient
-
-    print("\n── InfluxDB Setup ──────────────────────────────────")
-    url = input("URL [http://localhost:8086]: ").strip() or "http://localhost:8086"
-    org = input("Organization: ").strip()
-    bucket = input("Bucket: ").strip()
-    print("API Token")
-    print("  (Find yours at: InfluxDB UI → Load Data → API Tokens)")
-    token = getpass.getpass("  Token: ")
-    measurement = input("Measurement name: ").strip()
-    print("  Use snake_case, e.g. sps5000x_bench1")
-
-    if not all([org, bucket, token, measurement]):
-        print("Missing required fields — InfluxDB logging disabled.")
-        return None
 
     print("\nTesting connection... ", end="", flush=True)
     client = InfluxDBClient(url=url, token=token, org=org)
@@ -218,12 +240,20 @@ async def handler_tcp(ws, reader, writer):
             cmd = message.strip()
             if not cmd:
                 continue
-            writer.write((cmd + "\n").encode("ascii"))
-            await writer.drain()
+            try:
+                writer.write((cmd + "\n").encode("ascii"))
+                await writer.drain()
+            except OSError as e:
+                print(f"\n  TCP write error: {e}")
+                break
             print(f"  → Sent to PSU: {cmd}")
             track_query(cmd)
             if "?" in cmd:
-                raw = await reader.readline()
+                try:
+                    raw = await reader.readline()
+                except OSError as e:
+                    print(f"\n  TCP read error: {e}")
+                    break
                 line = raw.decode("ascii", errors="replace").strip()
                 if line:
                     try:
@@ -247,11 +277,19 @@ async def handler_usbtmc(ws, f):
             cmd = message.strip()
             if not cmd:
                 continue
-            await loop.run_in_executor(None, f.write, (cmd + "\n").encode("ascii"))
+            try:
+                await loop.run_in_executor(None, f.write, (cmd + "\n").encode("ascii"))
+            except OSError as e:
+                print(f"\n  USBTMC write error: {e}")
+                break
             print(f"  → Sent to PSU: {cmd}")
             track_query(cmd)
             if "?" in cmd:
-                raw = await loop.run_in_executor(None, f.read, 4096)
+                try:
+                    raw = await loop.run_in_executor(None, f.read, 4096)
+                except OSError as e:
+                    print(f"\n  USBTMC read error: {e}")
+                    break
                 line = raw.decode("ascii", errors="replace").strip()
                 if line:
                     try:
