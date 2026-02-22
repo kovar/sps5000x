@@ -3,9 +3,9 @@
  * each with 3 datasets (CH1 red, CH2 blue, CH3 green).
  */
 
-const CH1_COLOR = { border: '#e74c3c', fill: 'rgba(231,76,60,0.08)' };
-const CH2_COLOR = { border: '#3498db', fill: 'rgba(52,152,219,0.08)' };
-const CH3_COLOR = { border: '#16a34a', fill: 'rgba(22,163,74,0.08)' };
+const CH1_COLOR = { border: '#e74c3c', fill: '#e74c3c' };
+const CH2_COLOR = { border: '#3498db', fill: '#3498db' };
+const CH3_COLOR = { border: '#16a34a', fill: '#16a34a' };
 
 export class DualChartManager {
   #voltageChart = null;
@@ -145,6 +145,12 @@ function createChart(canvas, yLabel, dataRefs) {
         legend: {
           display: true,
           position: 'top',
+          labels: {
+            usePointStyle: true,
+            pointStyle: 'circle',
+            boxWidth: 6,
+            boxHeight: 6,
+          },
         },
       },
       animation: false,

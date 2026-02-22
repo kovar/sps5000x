@@ -73,7 +73,7 @@ export function updateReadout(reading) {
     }
   }
   const timeEl = document.getElementById('readoutTime');
-  if (timeEl) timeEl.textContent = new Date().toLocaleTimeString();
+  if (timeEl) timeEl.textContent = 'Last packet received at ' + new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
 }
 
 /**
