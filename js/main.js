@@ -26,6 +26,7 @@ const statsTrackers = {
 };
 let queue = null;
 let pollTimer = null;
+let pollBusy = false;
 let demoInterval = null;
 let demoState = null;
 
@@ -182,12 +183,16 @@ function stopPolling() {
 }
 
 async function doPoll() {
-  if (!queue) return;
+  if (!queue || pollBusy) return;
+  pollBusy = true;
   try {
     const reading = await requestReading(queue);
     handleReading(reading);
   } catch (err) {
     appendLog('Poll error: ' + err.message);
+    queue?.clear(); // flush stale pending entries to prevent queue desync
+  } finally {
+    pollBusy = false;
   }
 }
 
